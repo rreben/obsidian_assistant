@@ -25,6 +25,7 @@ def test_process_complete_file(test_files_path):
         assert '2023-03-13' in content
         assert not 'HH diverse' in content
         assert 'Something happened today' in content
+        assert not 'What have you learned today' in content
         assert not 'Ich habe etwas gelernt' in content
     os.remove('output.md')
 

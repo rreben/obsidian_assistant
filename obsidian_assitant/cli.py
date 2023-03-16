@@ -42,10 +42,10 @@ def process_file(input_file, output_file,
             elif start_regex.match(line):
                 writethrough = True
             else:
-                if writethrough:
-                    output.write(line)
                 if stop_regex.match(line):
                     writethrough = False
+                if writethrough:
+                    output.write(line)
 
 
 @click.command(help='Concatenates journal entries')
@@ -53,7 +53,8 @@ def process_file(input_file, output_file,
 @click.argument('output_file', type=click.Path())
 def concatenate_journal(input_folder, output_file):
     print ("Do concatenation")
-    for filename in os.listdir(input_folder):
+    filenames = sorted(os.listdir(input_folder))
+    for filename in filenames:
         if filename.endswith('.md'):
             input_file = os.path.join(input_folder, filename)
             process_file(input_file, output_file)
