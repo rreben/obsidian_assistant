@@ -8,59 +8,88 @@ import shutil
 import pytest
 from obsidian_assitant import *
 
-@pytest.fixture
-def test_input_folder(tmpdir):
-    # Erstelle Testdateien im Eingabeverzeichnis
-    input_folder = tmpdir.mkdir('input_folder')
-    filename = f'2023-03-16.md'
-    filepath = input_folder.join(filename)
-    with open(str(filepath), 'w') as f:
-        f.write(f'#{filename}\n\nWHAT HAPPENED TODAY?\n\nText for {filename}\n\n')
-
-    # Gib den Pfad zu den Testdateien zurück
-    yield str(input_folder)
-
-    # Lösche die Testdateien
-    shutil.rmtree(str(input_folder))
-
 
 @pytest.fixture
-def example_file_path():
-    return os.path.join(os.path.dirname(__file__), '2023-03-13.md')
+def test_files_path():
+    return os.path.join(os.path.dirname(__file__), 'test_files')
 
-def test_process_file(test_input_folder):
-    input_folder = test_input_folder
 
-    # Rufe das Hauptprogramm auf, um die Ausgabedatei zu erstellen
-    process_file(os.path.join(input_folder, '2023-03-16.md'), 'output.md')
+def test_process_complete_file(test_files_path):
+    test_folder = test_files_path
 
-    # Prüfe, ob die Ausgabedatei erstellt wurde
+    # Example Datei 2023-03-13.md enthält alle Abschnitte
+    process_file(os.path.join(test_folder, '2023-03-13.md'), 'output.md')
     assert os.path.exists('output.md')
-
-    # Prüfe, ob der Text in der Ausgabedatei korrekt ist
     with open('output.md', 'r') as f:
         content = f.read()
-        assert 'Text for' in content
-        assert '2023-03-16' in content
-
-    # Lösche die Ausgabedatei
+        assert '2023-03-13' in content
+        assert not 'HH diverse' in content
+        assert 'Something happened today' in content
+        assert not 'Ich habe etwas gelernt' in content
     os.remove('output.md')
 
 
-def test_process_file_next(example_file_path):
-    input_folder = test_input_folder
+def test_process_complete_file_no_regex(test_files_path):
+    test_folder = test_files_path
 
-    # Rufe das Hauptprogramm auf, um die Ausgabedatei zu erstellen
-    process_file(example_file_path, 'output.md')
-
-    # Prüfe, ob die Ausgabedatei erstellt wurde
+    # Example Datei 2023-03-13.md enthält alle Abschnitte
+    process_file(os.path.join(test_folder, '2023-03-13.md'),
+                 'output.md',
+                 start_pattern='^\*\*',
+                 stop_pattern='^xxx')
     assert os.path.exists('output.md')
-
-    # Prüfe, ob der Text in der Ausgabedatei korrekt ist
     with open('output.md', 'r') as f:
         content = f.read()
+        assert '2023-03-13' in content
         assert 'HH diverse' in content
         assert 'Something happened today' in content
+        assert 'Ich habe etwas gelernt' in content
+    os.remove('output.md')
 
-    # Lösche die Ausgabedatei
+
+def test_process_complete_file_learnings(test_files_path):
+    test_folder = test_files_path
+
+    # Example Datei 2023-03-13.md enthält alle Abschnitte
+    process_file(os.path.join(test_folder, '2023-03-13.md'),
+                 'output.md',
+                 start_pattern='^\*\*What have you learned',
+                 stop_pattern='^\*\*')
+    assert os.path.exists('output.md')
+    with open('output.md', 'r') as f:
+        content = f.read()
+        assert '2023-03-13' in content
+        assert not 'HH diverse' in content
+        assert not 'Something happened today' in content
+        assert 'Ich habe etwas gelernt' in content
+    os.remove('output.md')
+
+
+def test_process_last_paragraphs_missing_file(test_files_path):
+    test_folder = test_files_path
+
+    # Example Datei 2023-03-13.md keine nachfolgenden Abschnitte
+    process_file(os.path.join(test_folder, '2023-03-14.md'), 'output.md')
+    assert os.path.exists('output.md')
+    with open('output.md', 'r') as f:
+        content = f.read()
+        assert '2023-03-14' in content
+        assert not 'HH diverse' in content
+        assert 'Something happened today' in content
+        assert not 'Ich habe etwas gelernt' in content
+    os.remove('output.md')
+
+
+def test_process_missing_paragrpaph_file(test_files_path):
+    test_folder = test_files_path
+
+    # Example Datei 2023-03-13.md keine nachfolgenden Abschnitte
+    process_file(os.path.join(test_folder, '2023-03-12.md'), 'output.md')
+    assert os.path.exists('output.md')
+    with open('output.md', 'r') as f:
+        content = f.read()
+        assert '2023-03-12' in content
+        assert not 'HH diverse' in content
+        assert not 'Something happened today' in content
+        assert not 'Ich habe etwas gelernt' in content
     os.remove('output.md')

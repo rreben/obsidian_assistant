@@ -1,5 +1,5 @@
 # app.py
-# Copyright (c) 2022 Dr. Rupert Rebentisch
+# Copyright (c) 2023 Dr. Rupert Rebentisch
 # Licensed under the MIT license
 
 

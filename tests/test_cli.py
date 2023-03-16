@@ -11,5 +11,7 @@ def test_cli():
     result = runner.invoke(concatenate_journal, ['--help'])
     assert result.exit_code == 0
     assert 'Concatenates journal entries' in result.output
+    assert 'INPUT_FOLDER' in result.output
+    assert 'OUTPUT_FILE' in result.output
     assert 'Show this message and exit' in result.output
     return runner
