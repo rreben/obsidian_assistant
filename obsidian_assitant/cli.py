@@ -12,6 +12,6 @@ def process_file(filepath, output_file):
         o.write(file_content)
 
 
-@click.command(help='concatenates journal entries')
+@click.command(help='Concatenates journal entries')
 def concatenate_journal():
     print ("Do concatenation")

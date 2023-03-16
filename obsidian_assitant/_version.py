@@ -1,3 +1,7 @@
+# _version.py
+# Copyright (c) 2023 Dr. Rupert Rebentisch
+# Licensed under the MIT license
+
 import os
 import io
 
