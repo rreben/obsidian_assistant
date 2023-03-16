@@ -33,6 +33,7 @@ def process_file(input_file, output_file,
     date_regex = re.compile(date_pattern)
     start_regex = re.compile(start_pattern)
     stop_regex = re.compile(stop_pattern)
+    image_regex = re.compile(r'(!\[\[.*\]\])')
     writethrough = False
     with (open(input_file, 'r') as input,
         open(output_file, 'a') as output):
@@ -46,6 +47,11 @@ def process_file(input_file, output_file,
                     writethrough = False
                 if writethrough:
                     output.write(line)
+                else:
+                    match = image_regex.search(line)
+                    if match:
+                        output.write(match.group(1))
+
 
 
 @click.command(help='Concatenates journal entries')
