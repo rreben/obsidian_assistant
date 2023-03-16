@@ -29,6 +29,7 @@ def process_file(input_file, output_file,
     - When a line matches the start pattern, activates writing of the subsequent lines.
     - Writes any subsequent lines until a line matching the stop pattern is encountered.
     - Stops writing when the stop pattern is reached or the input file ends.
+    - If there is a match for the image pattern, the image is written to the output file. The image pattern is hard-coded and looks for lines that contain '![[' and ']]'. In order not to write the image twice, the image pattern is only checked the section is not in the part of the file that is written to the output. Only the first match in the line is written to the output file.
     """
     date_regex = re.compile(date_pattern)
     start_regex = re.compile(start_pattern)
