@@ -58,12 +58,15 @@ def process_file(input_file, output_file,
 @click.command(help='Concatenates journal entries')
 @click.argument('input_folder', type=click.Path(exists=True))
 @click.argument('output_file', type=click.Path())
-def concatenate_journal(input_folder, output_file):
+@click.option('--start-pattern', '-s', default=r'^\*\*What happened',
+              help='A regular expression that specifies the pattern ' +
+              'for the beginning of the section to be written.')
+def concatenate_journal(input_folder, output_file, start_pattern):
     print ("Do concatenation")
     filenames = sorted(os.listdir(input_folder))
     for filename in filenames:
         if filename.endswith('.md'):
             input_file = os.path.join(input_folder, filename)
-            process_file(input_file, output_file)
+            process_file(input_file, output_file, start_pattern=start_pattern)
     click.echo(
         f'Successfully processed {len(os.listdir(input_folder))} files.')

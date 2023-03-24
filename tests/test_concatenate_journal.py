@@ -126,3 +126,20 @@ def test_process_just_image(test_files_path):
         assert not 'Ich habe etwas gelernt' in content
         assert '![[dummy.png]]' in content
     os.remove('output.md')
+
+
+def test_process_learnigs(test_files_path):
+    test_folder = test_files_path
+
+    # Example Datei 2023-03-16.md nur einen Link auf ein Bild
+    process_file(os.path.join(test_folder, '2023-03-12.md'), 
+                 'output.md', 
+                 start_pattern='^\*\*What have you learned', 
+                 stop_pattern='^\*\*')
+    assert os.path.exists('output.md')
+    with open('output.md', 'r') as f:
+        content = f.read()
+        assert '2023-03-12' in content
+        assert 'Ich habe etwas gelernt' in content
+        assert not '![[dummy.png]]' in content
+    os.remove('output.md')
