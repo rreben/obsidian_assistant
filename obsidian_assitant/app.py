@@ -4,7 +4,6 @@
 
 
 from . import cli
-import logging
 
 
 class ObsidianAssitant:
